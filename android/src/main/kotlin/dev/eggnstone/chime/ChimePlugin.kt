@@ -79,8 +79,29 @@ class ChimePlugin : FlutterPlugin, MethodCallHandler
             "Mute" -> handleMute(result)
             "UnbindVideoView" -> handleUnbindVideoView(call, result)
             "Unmute" -> handleUnmute(result)
+            "SendMessage" -> handleSendMessage(call, result)
             else -> result.notImplemented()
         }
+    }
+
+    private fun handleSendMessage(call: MethodCall, result: MethodChannel.Result) {
+        val safeAudioVideoFacade: AudioVideoFacade? = _audioVideoFacade
+        if (safeAudioVideoFacade == null)
+        {
+            result.error(NO_AUDIO_VIDEO_FACADE__ERROR_CODE, NO_AUDIO_VIDEO_FACADE__ERROR_MESSAGE, null)
+            return
+        }
+        if (call.argument<String>("topic") == null)
+        {
+            return
+        }
+        if (call.argument<String>("data") == null)
+        {
+            return
+        }
+
+        safeAudioVideoFacade.realtimeSendDataMessage(call.argument("topic")!!, call.argument("data")!!)
+        result.success(null)
     }
 
     private fun handleClearViewIds(call: MethodCall, result: MethodChannel.Result)
@@ -192,7 +213,7 @@ class ChimePlugin : FlutterPlugin, MethodCallHandler
         safeAudioVideoFacade.addDeviceChangeObserver(ChimeDeviceChangeObserver(safeEventSink))
         // addEventAnalyticsObserver: onEventReceived
         safeAudioVideoFacade.addMetricsObserver(ChimeMetricsObserver(safeEventSink))
-        safeAudioVideoFacade.addRealtimeDataMessageObserver(ChimeMetricsObserver(safeEventSink))
+        safeAudioVideoFacade.addRealtimeDataMessageObserver("meeting-topic", ChimeDataObserver(safeEventSink))
         // addRealtimeDataMessageObserver: onDataMessageReceived
         safeAudioVideoFacade.addRealtimeObserver(ChimeRealtimeObserver(safeEventSink))
         safeAudioVideoFacade.addVideoTileObserver(ChimeVideoTileObserver(safeEventSink))
