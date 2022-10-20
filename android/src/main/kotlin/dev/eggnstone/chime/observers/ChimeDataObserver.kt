@@ -10,7 +10,7 @@ import org.json.JSONObject
 class ChimeDataObserver(private val _eventSink: EventChannel.EventSink) : DataMessageObserver {
     override fun onDataMessageReceived(dataMessage: DataMessage) {
         val jsonObject = JSONObject()
-        jsonObject.put("Name", "OnActiveSpeakerDetected")
+        jsonObject.put("Name", "OnMessageReceived")
         jsonObject.put("Arguments", convertMessage(dataMessage))
 
         Handler(Looper.getMainLooper()).post {
