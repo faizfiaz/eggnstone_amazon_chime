@@ -192,6 +192,7 @@ class ChimePlugin : FlutterPlugin, MethodCallHandler
         safeAudioVideoFacade.addDeviceChangeObserver(ChimeDeviceChangeObserver(safeEventSink))
         // addEventAnalyticsObserver: onEventReceived
         safeAudioVideoFacade.addMetricsObserver(ChimeMetricsObserver(safeEventSink))
+        safeAudioVideoFacade.addRealtimeDataMessageObserver(ChimeMetricsObserver(safeEventSink))
         // addRealtimeDataMessageObserver: onDataMessageReceived
         safeAudioVideoFacade.addRealtimeObserver(ChimeRealtimeObserver(safeEventSink))
         safeAudioVideoFacade.addVideoTileObserver(ChimeVideoTileObserver(safeEventSink))

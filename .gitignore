@@ -11,3 +11,5 @@ build/
 
 # Manually added
 .idea/*
+.idea
+android/.idea/*
