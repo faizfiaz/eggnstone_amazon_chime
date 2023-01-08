@@ -13,7 +13,10 @@ class ChimeDefaultVideoRenderView internal constructor(context: Context?) : Plat
 {
     private val _defaultVideoRenderView: DefaultVideoRenderView = DefaultVideoRenderView(context!!)
 
-    val videoRenderView: VideoRenderView get() = _defaultVideoRenderView
+    fun videoRenderView(): VideoRenderView{
+        _defaultVideoRenderView.mirror = true
+        return _defaultVideoRenderView
+    }
 
     override fun dispose() = Unit
 

@@ -207,6 +207,7 @@ class ChimePlugin : FlutterPlugin, MethodCallHandler
             return
         }
 
+
         safeAudioVideoFacade.addActiveSpeakerObserver(DefaultActiveSpeakerPolicy(), ChimeActiveSpeakerDetectedObserver(safeEventSink))
         safeAudioVideoFacade.addAudioVideoObserver(ChimeAudioVideoObserver(safeEventSink))
         // addContentShareObserver: onContentShareStarted, onContentShareStopped
@@ -329,7 +330,7 @@ class ChimePlugin : FlutterPlugin, MethodCallHandler
             return
         }
 
-        val videoRenderView: VideoRenderView = view.videoRenderView
+        val videoRenderView: VideoRenderView = view.videoRenderView()
 
         safeAudioVideoFacade.bindVideoView(videoRenderView, tileId)
         result.success(null)
