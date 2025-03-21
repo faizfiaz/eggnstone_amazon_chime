@@ -1,0 +1,14 @@
+{
+    "configurations": [{
+            "name": "Debug",
+            "type": "dart",
+            "request": "launch",
+            "program": "example/lib/main.dart",
+            "args": [
+             
+            ]
+        },
+    ],
+    "dart.flutterSdkPath": ".fvm/flutter_sdk",
+    "dart.sdkPath": ".fvm/flutter_sdk/bin/dart",
+}

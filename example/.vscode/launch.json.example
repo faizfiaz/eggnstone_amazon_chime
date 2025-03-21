@@ -1,0 +1,41 @@
+{
+    "configurations": [{
+            "name": "Production",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main.dart",
+            "args": [
+                "--flavor",
+                "prod", 
+                "--dart-define=TIPTIP_APPGROUP_ID=&quot;group.tv.tiptip.app.mobile.MoEngage&quot;",
+                "--dart-define=TIPTIP_REVENUECAT_KEY=&quot;goog_qDRoCbwECAOKrLcALuypcDSMEEn&quot;",
+                "--dart-define=TIPTIP_AES_GCM_KEY=&quot;!:PEG-Erga9PP6#_htyH8A#-.a!#&gt;2?1&quot;",
+                "--dart-define=TIPTIP_FB_APP_ID=&quot;370459655216596&quot;", 
+                "--dart-define=TIPTIP_FB_CLIENT_TOKEN=&quot;8d7781241a8c2184d23a3e3558fa3c77&quot;",
+            ]
+        },
+        {
+            "name": "Staging",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main.dart",
+            "args": [
+                "--flavor",
+                "staging",
+                "--dart-define=TIPTIP_ENV_NAME=staging",
+                "--dart-define=TIPTIP_PACKAGE_NAME_SUFFIX=.staging",
+                "--dart-define=TIPTIP_APP_NAME=&quot;TipTip Test&quot;",
+                "--dart-define=TIPTIP_BRANCH_KEY=key_test_fk4SRQ3DvH8YN8xpzKx2amggDylMnukO", 
+                "--dart-define=TIPTIP_APPGROUP_ID=&quot;group.tv.tiptip.app.mobile.staging.MoEngage&quot;",
+                "--dart-define=TIPTIP_MOENGAGE_APP_ID=EXSWHJNZRI0CMECGKOVYJ1OQ", 
+                "--dart-define=TIPTIP_REVENUECAT_KEY=&quot;goog_qaAPSwtJtBfRwrkTqeVsSBHQAYy&quot;", 
+                "--dart-define=TIPTIP_AES_GCM_KEY=&quot;!T1pT1pC0nt3NS312A153nCrypTPDF~!&quot;",
+                "--dart-define=TIPTIP_FB_APP_ID=&quot;392483293045561&quot;",
+                "--dart-define=TIPTIP_FB_CLIENT_TOKEN=&quot;bb2667f8d22f01f9b744dab3f04df1d6&quot;",
+                "--dart-define=TIPTIP_QUEUE_IT_ALIAS=&quot;queueroomstaging&quot;",
+            ]
+        }
+    ],
+    "dart.flutterSdkPath": "/Users/dimas.faizin/Development/flutter",
+    "dart.sdkPath": "/Users/dimas.faizin/Development/flutter/bin/dart",
+}

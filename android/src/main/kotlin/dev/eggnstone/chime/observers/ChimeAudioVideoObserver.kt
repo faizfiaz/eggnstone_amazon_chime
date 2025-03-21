@@ -53,6 +53,15 @@ class ChimeAudioVideoObserver(private val _eventSink: EventSink) : AudioVideoObs
         _eventSink.success(jsonObject.toString())
     }
 
+    override fun onCameraSendAvailabilityUpdated(available: Boolean) {
+        val jsonObject = JSONObject()
+        val eventArguments = JSONObject()
+        eventArguments.put("Available", available)
+        jsonObject.put("Name", "OnCameraSendAvailabilityUpdated")
+        jsonObject.put("Arguments", eventArguments)
+        _eventSink.success(jsonObject.toString())
+    }
+
     override fun onConnectionBecamePoor()
     {
         val jsonObject = JSONObject()

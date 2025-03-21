@@ -4,10 +4,8 @@ import 'package:flutter/services.dart';
 
 /// Main plugin class
 class Chime {
-  static const MethodChannel _methodChannel =
-      const MethodChannel('ChimePlugin');
-  static const EventChannel _eventChannel =
-      const EventChannel('ChimePluginEvents');
+  static const MethodChannel _methodChannel = const MethodChannel('ChimePlugin');
+  static const EventChannel _eventChannel = const EventChannel('ChimePluginEvents');
 
   /// The event channel you can subscribe to with
   /// Chime.eventChannel.receiveBroadcastStream().listen()
@@ -19,17 +17,22 @@ class Chime {
   }
 
   /// Creates a meeting session.
-  static Future<String?> createMeetingSession(
-      {required String meetingId,
-      required String externalMeetingId,
-      required String mediaRegion,
-      required String mediaPlacementAudioHostUrl,
-      required String mediaPlacementAudioFallbackUrl,
-      required String mediaPlacementSignalingUrl,
-      required String mediaPlacementTurnControlUrl,
-      required String attendeeId,
-      required String externalUserId,
-      required String joinToken}) async {
+  static Future<String?> createMeetingSession({
+    required String meetingId,
+    required String externalMeetingId,
+    required String mediaRegion,
+    required String mediaPlacementAudioHostUrl,
+    required String mediaPlacementAudioFallbackUrl,
+    required String mediaPlacementSignalingUrl,
+    required String mediaPlacementTurnControlUrl,
+    required String attendeeId,
+    required String externalUserId,
+    required String joinToken,
+    String? screenDataUrl,
+    String? screenSharingUrl,
+    String? screenViewUrl,
+    String? eventIngestionUrl,
+  }) async {
     var params = {
       "MeetingId": meetingId,
       "ExternalMeetingId": externalMeetingId,
@@ -40,7 +43,11 @@ class Chime {
       "MediaPlacementTurnControlUrl": mediaPlacementTurnControlUrl,
       "AttendeeId": attendeeId,
       "ExternalUserId": externalUserId,
-      "JoinToken": joinToken
+      "JoinToken": joinToken,
+      "ScreenDataUrl": screenDataUrl,
+      "ScreenSharingUrl": screenSharingUrl,
+      "ScreenViewUrl": screenViewUrl,
+      "EventIngestionUrl": eventIngestionUrl,
     };
 
     return _methodChannel.invokeMethod('CreateMeetingSession', params);
@@ -118,5 +125,22 @@ class Chime {
   static Future<String?> sendMessage(String topic, String data) async {
     var params = {"topic": topic, "data": data};
     return _methodChannel.invokeMethod('SendMessage', params);
+  }
+
+  //Screen Capture
+  static Future<String?> requestPermissionScreenCapture() async {
+    return _methodChannel.invokeMethod('RequestScreenCapturePermission');
+  }
+
+  static Future<String?> startScreenCapture() async {
+    return _methodChannel.invokeMethod('ScreenCaptureStart');
+  }
+
+  static Future<String?> stopScreenCapture() async {
+    return _methodChannel.invokeMethod('ScreenCaptureStop');
+  }
+
+  static Future<String?> permissionScreenCapture() async {
+    return _methodChannel.invokeMethod('startActivityForResult');
   }
 }
