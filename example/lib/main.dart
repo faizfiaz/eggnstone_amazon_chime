@@ -9,6 +9,7 @@ import 'package:eggnstone_amazon_chime/eggnstone_amazon_chime.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 void main() {
   runApp(App());
@@ -30,16 +31,153 @@ class _AppState extends State<App> {
   bool _isAndroidEmulator = false;
   bool _isIosSimulator = false;
 
+  bool isWebviewActivated = false;
+  late WebViewController controller;
+
   @override
   void initState() {
     super.initState();
-    _startChime();
 
     _requestPermission();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _startChime();
+      await _audioVideoStart();
+      await _audioVideoStartLocalVideo();
+      await _audioVideoStartRemoteVideo();
+    });
+
+    controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            // Update loading bar.
+          },
+          onPageStarted: (String url) {},
+          onPageFinished: (String url) {},
+          onWebResourceError: (WebResourceError error) {},
+          onNavigationRequest: (NavigationRequest request) {
+            if (request.url.startsWith('https://www.youtube.com/')) {
+              return NavigationDecision.prevent;
+            }
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse('https://flutter.dev'));
+  }
+
+  Widget buildVideoAttender() {
+    if (_attendees.length > 1) {
+      final attendee = _attendees[1];
+      if (attendee.videoView != null) {
+        return Container(
+          width: double.infinity,
+          height: double.infinity,
+          // color: Colors.black.opacity(0.5),
+          child: Center(child: attendee.videoView),
+        );
+      }
+    }
+
+    return const Center(child: Text('Waiting Video Connection'));
+  }
+
+  double widthVideoCalle = 130;
+  double heightVideoCalle = 170;
+
+  Widget buildVideoOther() {
+    if (_attendees.length == 1 || _attendees.length == 2) {
+      print('buildVideoOther: _attendees.length == 1');
+      final attendee = _attendees[0];
+      if (attendee.videoView != null) {
+        return Container(
+          width: widthVideoCalle,
+          height: heightVideoCalle,
+          margin: const EdgeInsets.only(left: 24, bottom: 0),
+          color: Colors.green,
+          alignment: Alignment.center,
+          child: attendee.videoView,
+        );
+      }
+    }
+
+    return Container(
+      width: widthVideoCalle,
+      height: heightVideoCalle,
+      color: Colors.grey,
+      alignment: Alignment.center,
+      child: const Text(
+        "Waiting Other User",
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 12,
+          color: Colors.white,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    return MaterialApp(
+        home: Scaffold(
+            appBar: AppBar(
+              title: Text('Chime POC'),
+              actions: [
+                Card(
+                  clipBehavior: Clip.antiAlias,
+                  color: isWebviewActivated ? Colors.red : Colors.green,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        isWebviewActivated = !isWebviewActivated;
+                      });
+                    },
+                    child: Container(
+                      width: 45,
+                      height: 45,
+                      child: Center(child: Icon(Icons.web, color: Colors.white)),
+                    ),
+                  ),
+                )
+              ],
+            ),
+            body: Stack(
+              children: [
+                buildVideoAttender(),
+                Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+                  // Text(_createMeetingSessionResult),
+                  // Text(_audioVideoStartResult),
+                  // Text(_audioVideoStartLocalVideoResult),
+                  // Text(_audioVideoStartRemoteVideoResult),
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.only(left: 0, bottom: 20, right: 24),
+                    alignment: Alignment.bottomLeft,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        buildVideoOther(),
+                        const Spacer(),
+                        isWebviewActivated
+                            ? Container(
+                                width: 200,
+                                height: 400,
+                                margin: const EdgeInsets.only(left: 12),
+                                child: WebViewWidget(controller: controller),
+                              )
+                            : SizedBox.shrink(),
+                      ],
+                    ),
+                  )
+                ])
+              ],
+            )));
+
     var chimeViewChildren = List<Widget>.empty(growable: true);
 
     if (_attendees.length == 0)
@@ -108,7 +246,7 @@ class _AppState extends State<App> {
             body: Column(children: [SizedBox(height: 8), Text(_version), SizedBox(height: 8), Expanded(child: content)])));
   }
 
-  void _startChime() async {
+  Future<void> _startChime() async {
     await _getVersion();
 
     if (Platform.isAndroid) {
@@ -384,4 +522,6 @@ class _AppState extends State<App> {
     final result = await Permission.notification.request();
     print('RequestPermission: $result');
   }
+
+  _showWebViewChime() {}
 }
