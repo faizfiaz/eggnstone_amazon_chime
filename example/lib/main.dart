@@ -8,6 +8,7 @@ import 'package:device_info/device_info.dart';
 import 'package:eggnstone_amazon_chime/eggnstone_amazon_chime.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -33,12 +34,14 @@ class _AppState extends State<App> {
 
   bool isWebviewActivated = false;
   late WebViewController controller;
+  late FlutterTts flutterTts;
 
   @override
   void initState() {
     super.initState();
 
     _requestPermission();
+    initTts();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _startChime();
@@ -66,6 +69,20 @@ class _AppState extends State<App> {
         ),
       )
       ..loadRequest(Uri.parse('https://flutter.dev'));
+  }
+
+  dynamic initTts() async {
+    flutterTts = FlutterTts();
+    flutterTts.setEngine(await flutterTts.getDefaultEngine);
+    flutterTts.setVolume(1.0);
+    flutterTts.setSpeechRate(0.5);
+    flutterTts.setPitch(1.0);
+    flutterTts.setLanguage('id-ID');
+  }
+
+  Future<void> speak() async {
+    await flutterTts.speak(
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.");
   }
 
   Widget buildVideoAttender() {
@@ -135,6 +152,7 @@ class _AppState extends State<App> {
                     onTap: () {
                       setState(() {
                         isWebviewActivated = !isWebviewActivated;
+                        speak();
                       });
                     },
                     child: Container(
